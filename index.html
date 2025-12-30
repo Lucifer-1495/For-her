@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Special Surprise 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background: linear-gradient(135deg, #ffd1dc, #ffe6f0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    background: rgba(255,255,255,0.45);
+    padding: 20px;
+    border-radius: 30px;
+    width: 85%;
+    max-width: 420px;
+    max-height: 98vh;
+    overflow-y: auto;
+    -webkit-backdrop-filter: blur(8px); 
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.3);
+    animation: popIn 1.2s ease forwards;
+    position: relative;
+    z-index: 10;
+    
+    /* Cross-browser scrollbar hiding */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Specific scrollbar hiding for Chrome/Safari/Samsmung */
+.container::-webkit-scrollbar {
+    display: none;
+    width: 0 !important;
+}
+
+/* Only apply scrollbar-width where supported to avoid diagnostics */
+@supports (scrollbar-width: none) {
+    .container {
+        scrollbar-width: none;
+    }
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.teddy {
+    width: 110px;
+    height: auto;
+    cursor: pointer;
+    animation: breathe 3s ease-in-out infinite;
+    transition: all 0.6s ease;
+    margin-bottom: 5px;
+}
+
+@keyframes breathe {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.mail-wrapper {
+    position: relative;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.envelope-wrapper {
+    position: relative;
+    width: 200px;
+    height: 130px;
+    background: #ffb6c1;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 100px solid transparent;
+    border-right: 100px solid transparent;
+    border-top: 75px solid #ff8da1;
+    transform-origin: top;
+    transition: transform 0.6s ease;
+    z-index: 4;
+}
+
+.envelope-front {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 100px solid #ffccd5;
+    border-right: 100px solid #ffccd5;
+    border-bottom: 65px solid #ffccd5;
+    border-top: 65px solid transparent;
+    border-radius: 0 0 10px 10px;
+    z-index: 3;
+}
+
+.wax-seal {
+    position: absolute;
+    top: 55px;
+    left: 75px;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle at 30% 30%, #d42d2d, #8b0000);
+    border-radius: 50%;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), 2px 4px 6px rgba(0,0,0,0.3);
+}
+
+.wax-seal::after {
+    content: "❤";
+    color: #4a0000;
+    font-size: 24px;
+}
+
+.letter {
+    width: 180px;
+    height: 100px;
+    background: #fff;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.click-me-text {
+    margin-top: 35px;
+    color: #ff69b4;
+    font-weight: bold;
+}
+
+.envelope-wrapper.open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+.envelope-wrapper.open .letter { transform: translateY(-80px); z-index: 5; }
+.envelope-wrapper.open .wax-seal { opacity: 0; }
+
+.hidden { display: none; }
+
+.buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    min-height: 80px;
+}
+
+button {
+    padding: 10px 22px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+#yesBtn { background: #ff69b4; color: white; z-index: 100; }
+#noBtn { background: white; color: #888; position: relative; z-index: 10; }
+
+.bg-heart {
+    position: absolute;
+    font-size: 20px;
+    opacity: 0.2;
+    animation: float 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh); }
+    100% { transform: translateY(-10vh); }
+}
+
+.final-letter {
+    background: #fff8e7;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 10px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 18px;
+    line-height: 1.3;
+    color: #5a3e2b;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: unfold 1.2s ease forwards;
+    transform-origin: top;
+}
+
+@keyframes unfold {
+    from { opacity: 0; transform: scaleY(0); }
+    to { opacity: 1; transform: scaleY(1); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div id="mailScreen">
+        <h2 id="mainHeading">You got a mailll! 🐾</h2>
+        <div class="mail-wrapper">
+            <img id="teddyFace" class="teddy" src="gif_starting.gif" alt="Cat" onclick="openEnvelope()">
+            
+            <div class="envelope-wrapper" id="envelopeWrapper" onclick="openLetter()">
+                <div class="envelope-flap"></div>
+                <div class="envelope-front"></div>
+                <div class="wax-seal" id="seal"></div>
+                <div class="letter" id="theLetter">
+                    <div class="click-me-text">💌 Click Me!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="proposalScreen" class="hidden">
+        <h2 id="questionText">Will you be my Valentine? 💕</h2>
+        <div class="buttons">
+            <button id="yesBtn" onclick="sayYes()">YES</button>
+            <button id="noBtn" onmouseover="moveNo()">NO</button>
+        </div>
+
+        <div id="finalLetter" class="hidden final-letter">
+            In a world so wide, I found you,<br>
+            A heart so pure, a love so true.<br>
+            Every laugh, every gentle smile,<br>
+            Makes this journey so worthwhile.<br><br>
+            I don’t need riches, I don’t need gold,<br>
+            Just your hand to hold, through young and old.<br>
+            So here I stand, my heart’s in view,<br>
+            All I want… is to be yours, too. 💕
+        </div>
+    </div>
+</div>
+
+<script>
+function createHeart() {
+    const emojis = ["❤️", "💖", "✨", "🌸"];
+    const heart = document.createElement("div");
+    heart.className = "bg-heart";
+    heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+    heart.style.left = Math.random() * 100 + "vw";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+}
+setInterval(createHeart, 600);
+
+const teddy = document.getElementById("teddyFace");
+const teddyGifs = {
+    idle: "gif_starting.gif", 
+    sad: "sad_cat.gif",       
+    happy: "cat_happy.gif",
+    nervous: "nervous_cat.gif" 
+};
+
+function setTeddy(state) { teddy.src = teddyGifs[state]; }
+
+function openEnvelope() {
+    document.getElementById("envelopeWrapper").classList.add("open");
+    document.getElementById("mainHeading").innerHTML = "The seal is broken! ✨";
+}
+
+function openLetter() {
+    const wrapper = document.getElementById("envelopeWrapper");
+    if(wrapper.classList.contains("open")) {
+        document.getElementById("mailScreen").classList.add("hidden");
+        document.getElementById("proposalScreen").classList.remove("hidden");
+        document.getElementById("proposalScreen").prepend(teddy);
+        setTeddy("nervous");
+    } else {
+        openEnvelope();
+    }
+}
+
+function sayYes() {
+    setTeddy("happy");
+    confetti({ 
+        particleCount: 150, spread: 70, origin: { y: 0.6 },
+        colors: ['#ff69b4', '#ff1493', '#ffffff']
+    });
+    document.getElementById("questionText").innerHTML = "YAYYY! Happy Happy Happy! 💖";
+    document.getElementById("noBtn").style.display = "none";
+    document.getElementById("yesBtn").style.transform = "scale(1)";
+    
+    setTimeout(() => {
+        document.getElementById("finalLetter").classList.remove("hidden");
+        const container = document.querySelector('.container');
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }, 500);
+}
+
+let noCount = 0;
+let yesScale = 1;
+const alternateTexts = ["Really?", "Think again!", "Pleease?", "Am i so bad? 😿", "YES is better!"];
+
+function moveNo() {
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    
+    // Get button dimensions to ensure it stays on screen
+    const btnRect = noBtn.getBoundingClientRect();
+    const maxX = window.innerWidth - btnRect.width;
+    const maxY = window.innerHeight - btnRect.height;
+
+    noBtn.style.position = "fixed";
+    // Using Math.max(0, ...) ensures it doesn't move off the left/top edges
+    noBtn.style.left = Math.max(0, Math.random() * maxX) + "px";
+    noBtn.style.top = Math.max(0, Math.random() * maxY) + "px";
+
+    yesScale += 0.2; 
+    yesBtn.style.transform = `scale(${yesScale})`;
+    setTeddy("sad");
+    
+    if (noCount < alternateTexts.length) {
+        document.getElementById("questionText").innerHTML = alternateTexts[noCount];
+    }
+    noCount++;
+}
+</script>
+
+</body>
+</html>
