@@ -29,28 +29,21 @@ body {
     max-width: 420px;
     max-height: 98vh;
     overflow-y: auto;
+    
+    /* Safari Support */
     -webkit-backdrop-filter: blur(8px); 
     backdrop-filter: blur(8px);
+    
     border: 1px solid rgba(255,255,255,0.3);
     animation: popIn 1.2s ease forwards;
     position: relative;
     z-index: 10;
-    
-    /* Cross-browser scrollbar hiding */
-    -ms-overflow-style: none; /* IE/Edge */
 }
 
-/* Specific scrollbar hiding for Chrome/Safari/Samsmung */
+/* Hide scrollbars for Safari and Chrome */
 .container::-webkit-scrollbar {
     display: none;
     width: 0 !important;
-}
-
-/* Only apply scrollbar-width where supported to avoid diagnostics */
-@supports (scrollbar-width: none) {
-    .container {
-        scrollbar-width: none;
-    }
 }
 
 @keyframes popIn {
@@ -132,11 +125,7 @@ body {
     box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), 2px 4px 6px rgba(0,0,0,0.3);
 }
 
-.wax-seal::after {
-    content: "❤";
-    color: #4a0000;
-    font-size: 24px;
-}
+.wax-seal::after { content: "❤"; color: #4a0000; font-size: 24px; }
 
 .letter {
     width: 180px;
@@ -152,17 +141,13 @@ body {
     justify-content: center;
 }
 
-.click-me-text {
-    margin-top: 35px;
-    color: #ff69b4;
-    font-weight: bold;
-}
+.click-me-text { margin-top: 35px; color: #ff69b4; font-weight: bold; }
 
 .envelope-wrapper.open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
 .envelope-wrapper.open .letter { transform: translateY(-80px); z-index: 5; }
 .envelope-wrapper.open .wax-seal { opacity: 0; }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 
 .buttons {
     margin-top: 15px;
@@ -183,8 +168,9 @@ button {
     transition: transform 0.3s ease;
 }
 
-#yesBtn { background: #ff69b4; color: white; z-index: 100; }
-#noBtn { background: white; color: #888; position: relative; z-index: 10; }
+#yesBtn { background: #ff69b4; color: white; }
+#noBtn { background: white; color: #888; }
+#tryAgainBtn { background: #5a3e2b; color: white; }
 
 .bg-heart {
     position: absolute;
@@ -241,9 +227,10 @@ button {
 
     <div id="proposalScreen" class="hidden">
         <h2 id="questionText">Will you be my Valentine? 💕</h2>
-        <div class="buttons">
+        <div class="buttons" id="buttonContainer">
             <button id="yesBtn" onclick="sayYes()">YES</button>
-            <button id="noBtn" onmouseover="moveNo()">NO</button>
+            <button id="noBtn" onclick="handleNoClick()">NO</button>
+            <button id="tryAgainBtn" class="hidden" onclick="resetProposal()">Try Again? 🥺</button>
         </div>
 
         <div id="finalLetter" class="hidden final-letter">
@@ -274,7 +261,7 @@ setInterval(createHeart, 600);
 const teddy = document.getElementById("teddyFace");
 const teddyGifs = {
     idle: "gif_starting.gif", 
-    sad: "sad_cat.gif",       
+    sad: "sad_cat.gif",      
     happy: "cat_happy.gif",
     nervous: "nervous_cat.gif" 
 };
@@ -305,8 +292,10 @@ function sayYes() {
         colors: ['#ff69b4', '#ff1493', '#ffffff']
     });
     document.getElementById("questionText").innerHTML = "YAYYY! Happy Happy Happy! 💖";
-    document.getElementById("noBtn").style.display = "none";
+    document.getElementById("noBtn").classList.add("hidden");
+    document.getElementById("yesBtn").classList.remove("hidden");
     document.getElementById("yesBtn").style.transform = "scale(1)";
+    document.getElementById("tryAgainBtn").classList.add("hidden");
     
     setTimeout(() => {
         document.getElementById("finalLetter").classList.remove("hidden");
@@ -315,32 +304,21 @@ function sayYes() {
     }, 500);
 }
 
-let noCount = 0;
-let yesScale = 1;
-const alternateTexts = ["Really?", "Think again!", "Pleease?", "Am i so bad? 😿", "YES is better!"];
-
-function moveNo() {
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    
-    // Get button dimensions to ensure it stays on screen
-    const btnRect = noBtn.getBoundingClientRect();
-    const maxX = window.innerWidth - btnRect.width;
-    const maxY = window.innerHeight - btnRect.height;
-
-    noBtn.style.position = "fixed";
-    // Using Math.max(0, ...) ensures it doesn't move off the left/top edges
-    noBtn.style.left = Math.max(0, Math.random() * maxX) + "px";
-    noBtn.style.top = Math.max(0, Math.random() * maxY) + "px";
-
-    yesScale += 0.2; 
-    yesBtn.style.transform = `scale(${yesScale})`;
+function handleNoClick() {
     setTeddy("sad");
-    
-    if (noCount < alternateTexts.length) {
-        document.getElementById("questionText").innerHTML = alternateTexts[noCount];
-    }
-    noCount++;
+    document.getElementById("questionText").innerHTML = "Oh no... 😿";
+    document.getElementById("noBtn").classList.add("hidden");
+    document.getElementById("yesBtn").classList.add("hidden");
+    document.getElementById("tryAgainBtn").classList.remove("hidden");
+}
+
+function resetProposal() {
+    setTeddy("nervous");
+    document.getElementById("questionText").innerHTML = "Will you be my Valentine? 💕";
+    document.getElementById("noBtn").classList.remove("hidden");
+    document.getElementById("yesBtn").classList.remove("hidden");
+    document.getElementById("yesBtn").style.transform = "scale(1)";
+    document.getElementById("tryAgainBtn").classList.add("hidden");
 }
 </script>
 
